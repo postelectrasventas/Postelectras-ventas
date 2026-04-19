@@ -24,3 +24,57 @@
     <div class="logo">postelectras</div>
     <h1 id="titulo">Cargando pedido...</h1>
     <span class="badge" id="estado"></span>
+
+    <div style="margin-top:20px">
+      <div class="campo"><span class="label">Cliente</span><span class="valor" id="cliente"></span></div>
+      <div class="campo"><span class="label">Producto</span><span class="valor" id="producto"></span></div>
+      <div class="campo"><span class="label">Cantidad</span><span class="valor" id="cantidad"></span></div>
+      <div class="campo"><span class="label">Fecha</span><span class="valor" id="fecha"></span></div>
+    </div>
+
+    <div class="timeline">
+      <h3>Estado del pedido</h3>
+      <div class="paso"><div class="circulo activo" id="p1"></div><span>Pedido recibido</span></div>
+      <div class="paso"><div class="circulo" id="p2"></div><span>En preparación</span></div>
+      <div class="paso"><div class="circulo" id="p3"></div><span>Enviado</span></div>
+      <div class="paso"><div class="circulo" id="p4"></div><span>Entregado</span></div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    const SHEET_ID = "1oLxoY7R6HcoZFpNp6m9VBWLqWmUVhp_wp9OEzjABDfY";
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+    fetch(url)
+      .then(r => r.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+        const cols = json.table.cols.map(c => c.label);
+
+        const fila = rows.find(r => r.c[0]?.v === id);
+        if (!fila) { document.getElementById("titulo").innerText = "Pedido no encontrado"; return; }
+
+        const get = (nombre) => {
+          const i = cols.indexOf(nombre);
+          return i >= 0 && fila.c[i] ? fila.c[i].v : "";
+        };
+
+        document.getElementById("titulo").innerText = "Pedido " + get("ID_Pedido");
+        document.getElementById("cliente").innerText = get("Cliente");
+        document.getElementById("producto").innerText = get("Producto");
+        document.getElementById("cantidad").innerText = get("Cantidad");
+        document.getElementById("fecha").innerText = get("Fecha_Creacion");
+        document.getElementById("estado").innerText = get("Etapa");
+
+        const etapa = get("Etapa");
+        if (etapa === "En preparación") document.getElementById("p2").classList.add("activo");
+        if (etapa === "Enviado") { document.getElementById("p2").classList.add("activo"); document.getElementById("p3").classList.add("activo"); }
+        if (etapa === "Entregado") { document.getElementById("p2").classList.add("activo"); document.getElementById("p3").classList.add("activo"); document.getElementById("p4").classList.add("activo"); }
+      });
+  </script>
+</body>
+</html>
