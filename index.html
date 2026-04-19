@@ -5,48 +5,140 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Seguimiento de Pedido - Postelectras</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; }
-    .card { background: white; max-width: 600px; margin: 40px auto; border-radius: 12px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    h1 { color: #1a1a1a; }
-    .badge { background: #f0c000; color: #000; padding: 6px 14px; border-radius: 20px; font-weight: bold; }
-    .campo { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
-    .label { color: #888; }
-    .valor { font-weight: bold; }
-    .timeline { margin-top: 30px; }
-    .paso { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
-    .circulo { width: 20px; height: 20px; border-radius: 50%; background: #ddd; }
-    .circulo.activo { background: #f0c000; }
-    .logo { font-size: 24px; font-weight: bold; color: #f0c000; margin-bottom: 20px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f4f6f9; min-height: 100vh; }
+    header { background: #f0c000; padding: 18px 32px; display: flex; justify-content: space-between; align-items: center; }
+    header .logo { font-size: 22px; font-weight: bold; color: #1a1a1a; }
+    header .portal { font-size: 13px; font-weight: bold; color: #1a1a1a; letter-spacing: 1px; }
+    .hero { background: #1a1a2e; color: white; padding: 48px 32px; text-align: center; }
+    .badge-hero { background: #f0c000; color: #1a1a1a; font-size: 11px; font-weight: bold; letter-spacing: 2px; padding: 6px 16px; border-radius: 20px; display: inline-block; margin-bottom: 16px; }
+    .hero h1 { font-size: 32px; font-weight: bold; margin-bottom: 12px; }
+    .hero p { font-size: 15px; color: #aab; max-width: 480px; margin: 0 auto; }
+    .container { max-width: 680px; margin: 0 auto; padding: 32px 16px; }
+    .card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid #e8eaed; }
+    .card-title { font-size: 12px; font-weight: bold; color: #888; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { font-size: 13px; color: #888; }
+    .info-value { font-size: 14px; font-weight: bold; color: #1a1a1a; }
+    .estado-badge { background: #f0c000; color: #1a1a1a; padding: 8px 20px; border-radius: 24px; font-weight: bold; font-size: 14px; display: inline-block; margin-bottom: 20px; }
+    .timeline-item { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1px solid #f5f5f5; }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-icon { width: 44px; height: 44px; border-radius: 50%; background: #f0f0f0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+    .timeline-icon.activo { background: #f0c000; }
+    .timeline-info { flex: 1; }
+    .timeline-etapa { font-size: 11px; color: #aaa; margin-bottom: 2px; }
+    .timeline-nombre { font-size: 15px; font-weight: bold; color: #1a1a1a; }
+    .timeline-etapa.activo-label { color: #f0c000; font-weight: bold; }
+    .meta-card { background: #f8f9fb; border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; border: 1px solid #e8eaed; }
+    .meta-label { font-size: 11px; color: #888; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+    .meta-value { font-size: 20px; font-weight: bold; color: #1a1a2e; }
+    .meta-sub { font-size: 12px; color: #aaa; margin-top: 2px; }
+    footer { text-align: center; padding: 24px; font-size: 12px; color: #aaa; }
+    #no-encontrado { display: none; text-align: center; padding: 60px 20px; }
+    #no-encontrado h2 { color: #1a1a2e; margin-bottom: 8px; }
   </style>
 </head>
 <body>
-  <div class="card">
+  <header>
     <div class="logo">postelectras</div>
-    <h1 id="titulo">Cargando pedido...</h1>
-    <span class="badge" id="estado"></span>
+    <div class="portal">PORTAL DE PEDIDOS</div>
+  </header>
 
-    <div style="margin-top:20px">
-      <div class="campo"><span class="label">Cliente</span><span class="valor" id="cliente"></span></div>
-      <div class="campo"><span class="label">Producto</span><span class="valor" id="producto"></span></div>
-      <div class="campo"><span class="label">Cantidad</span><span class="valor" id="cantidad"></span></div>
-      <div class="campo"><span class="label">Fecha</span><span class="valor" id="fecha"></span></div>
-    </div>
-
-    <div class="timeline">
-      <h3>Estado del pedido</h3>
-      <div class="paso"><div class="circulo activo" id="p1"></div><span>Pedido recibido</span></div>
-      <div class="paso"><div class="circulo" id="p2"></div><span>En preparación</span></div>
-      <div class="paso"><div class="circulo" id="p3"></div><span>Enviado</span></div>
-      <div class="paso"><div class="circulo" id="p4"></div><span>Entregado</span></div>
-    </div>
+  <div class="hero">
+    <div class="badge-hero">SISTEMA DE TRAZABILIDAD</div>
+    <h1>Seguimiento de tu pedido</h1>
+    <p>Consulta el estado en tiempo real de tu orden a lo largo de todas las etapas de producción y despacho.</p>
   </div>
+
+  <div id="no-encontrado">
+    <h2>Pedido no encontrado</h2>
+    <p>Verifica el link enviado a tu correo.</p>
+  </div>
+
+  <div class="container" id="contenido" style="display:none">
+
+    <div class="card">
+      <div class="card-title">Información del pedido</div>
+      <div class="estado-badge" id="estado">Cargando...</div>
+      <div class="info-row"><span class="info-label">N° Pedido</span><span class="info-value" id="id-pedido"></span></div>
+      <div class="info-row"><span class="info-label">Cliente</span><span class="info-value" id="cliente"></span></div>
+      <div class="info-row"><span class="info-label">Producto</span><span class="info-value" id="producto"></span></div>
+      <div class="info-row"><span class="info-label">Cantidad</span><span class="info-value" id="cantidad"></span></div>
+      <div class="info-row"><span class="info-label">Fecha</span><span class="info-value" id="fecha"></span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Estado del pedido</div>
+      <div id="timeline">
+        <div class="timeline-item" id="t1">
+          <div class="timeline-icon" id="i1">📦</div>
+          <div class="timeline-info">
+            <div class="timeline-etapa" id="e1">Pendiente</div>
+            <div class="timeline-nombre">Pedido recibido</div>
+          </div>
+        </div>
+        <div class="timeline-item" id="t2">
+          <div class="timeline-icon" id="i2">✅</div>
+          <div class="timeline-info">
+            <div class="timeline-etapa" id="e2">Pendiente</div>
+            <div class="timeline-nombre">Pedido validado</div>
+          </div>
+        </div>
+        <div class="timeline-item" id="t3">
+          <div class="timeline-icon" id="i3">🏭</div>
+          <div class="timeline-info">
+            <div class="timeline-etapa" id="e3">Pendiente</div>
+            <div class="timeline-nombre">En producción</div>
+          </div>
+        </div>
+        <div class="timeline-item" id="t4">
+          <div class="timeline-icon" id="i4">📬</div>
+          <div class="timeline-info">
+            <div class="timeline-etapa" id="e4">Pendiente</div>
+            <div class="timeline-nombre">Listo para despacho</div>
+          </div>
+        </div>
+        <div class="timeline-item" id="t5">
+          <div class="timeline-icon" id="i5">🚚</div>
+          <div class="timeline-info">
+            <div class="timeline-etapa" id="e5">Pendiente</div>
+            <div class="timeline-nombre">En transporte</div>
+          </div>
+        </div>
+        <div class="timeline-item" id="t6">
+          <div class="timeline-icon" id="i6">🏠</div>
+          <div class="timeline-info">
+            <div class="timeline-etapa" id="e6">Pendiente</div>
+            <div class="timeline-nombre">Entregado</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="meta-card">
+      <div class="meta-label">Tiempo estimado</div>
+      <div class="meta-value">3-5 días</div>
+      <div class="meta-sub">para finalizar producción</div>
+    </div>
+
+    <div class="meta-card">
+      <div class="meta-label">Soporte</div>
+      <div class="meta-value">postelectras.com</div>
+      <div class="meta-sub">Lun a Vie 8:00 - 18:00</div>
+    </div>
+
+  </div>
+
+  <footer>© 2026 Postelectras · Portal de seguimiento de pedidos</footer>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const id = params.get("id");
-
     const SHEET_ID = "1oLxoY7R6HcoZFpNp6m9VBWLqWmUVhp_wp9OEzjABDfY";
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+    const etapas = ["Pedido recibido", "Pedido validado", "En producción", "Listo para despacho", "En transporte", "Entregado"];
 
     fetch(url)
       .then(r => r.text())
@@ -54,26 +146,35 @@
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows;
         const cols = json.table.cols.map(c => c.label);
-
         const fila = rows.find(r => r.c[0]?.v === id);
-        if (!fila) { document.getElementById("titulo").innerText = "Pedido no encontrado"; return; }
+
+        if (!fila) { document.getElementById("no-encontrado").style.display = "block"; return; }
+
+        document.getElementById("contenido").style.display = "block";
 
         const get = (nombre) => {
           const i = cols.indexOf(nombre);
           return i >= 0 && fila.c[i] ? fila.c[i].v : "";
         };
 
-        document.getElementById("titulo").innerText = "Pedido " + get("ID_Pedido");
+        document.getElementById("id-pedido").innerText = get("ID_Pedido");
         document.getElementById("cliente").innerText = get("Cliente");
         document.getElementById("producto").innerText = get("Producto");
         document.getElementById("cantidad").innerText = get("Cantidad");
         document.getElementById("fecha").innerText = get("Fecha_Creacion");
         document.getElementById("estado").innerText = get("Etapa");
 
-        const etapa = get("Etapa");
-        if (etapa === "En preparación") document.getElementById("p2").classList.add("activo");
-        if (etapa === "Enviado") { document.getElementById("p2").classList.add("activo"); document.getElementById("p3").classList.add("activo"); }
-        if (etapa === "Entregado") { document.getElementById("p2").classList.add("activo"); document.getElementById("p3").classList.add("activo"); document.getElementById("p4").classList.add("activo"); }
+        const etapaActual = get("Etapa");
+        const idx = etapas.indexOf(etapaActual);
+
+        for (let i = 1; i <= 6; i++) {
+          const estaActivo = i <= idx + 1;
+          if (estaActivo) {
+            document.getElementById("i" + i).classList.add("activo");
+            document.getElementById("e" + i).innerText = i === idx + 1 ? "Etapa actual" : "Completado";
+            document.getElementById("e" + i).classList.add("activo-label");
+          }
+        }
       });
   </script>
 </body>
